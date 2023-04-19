@@ -2,10 +2,21 @@ import XCTest
 @testable import MockDataBuilder
 
 final class MockDataBuilderTests: XCTestCase {
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(MockDataBuilder().text, "Hello, World!")
+    
+    func test_mock_builder() {
+        do {
+            let data = try XCTUnwrap(MockDataBuilder.buildFrom(bundle: .module, resource: "products", extensions: "json", type: ProductData.self))
+            XCTAssert(data.products.count>0, "no products found")
+        } catch {
+            XCTFail("Mock data build failed")
+        }
+        
     }
+//    override func setUp() {
+//
+//
+//    }
+//    override func tearDown() {
+//
+//    }
 }
