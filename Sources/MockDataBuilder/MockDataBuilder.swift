@@ -6,19 +6,15 @@ public struct MockDataBuilder {
             guard let url = bundle.url(forResource: resource, withExtension: extensions) else {
                 return nil
             }
-            let data = createModelRawData(fromURL: url)
+            let data = try createModelRawData(fromURL: url)
             let result = try JSONDecoder().decode(T.self, from: data)
             return result
         } catch {
             return nil
         }
     }
-    static func createModelRawData(fromURL: URL) -> Data {
-        do {
-            let data = try Data(contentsOf: fromURL)
-            return data
-        } catch {
-            return Data()
-        }
+
+    static func createModelRawData(fromURL: URL) throws -> Data {
+        try Data(contentsOf: fromURL)
     }
 }
