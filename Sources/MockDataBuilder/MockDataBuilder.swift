@@ -1,47 +1,27 @@
 import Foundation
 
 public struct MockDataBuilder {
-    public static func buildFrom<T: Decodable>(bundle: Bundle, resource: String) -> T?{
-        
-        guard let url = bundle.url(forResource: resource, withExtension: nil) else {
-            return nil
+    public static func buildFrom<T: Decodable>(bundle: Bundle, fileName: String) -> T {
+        let data: Data
+
+        guard let url = bundle.url(forResource: fileName, withExtension: nil) else {
+            fatalError("Couldn't find \(fileName) in main bundle.")
         }
 
         do {
-            let data = try createModelRawData(fromURL: url)
-            let result = try JSONDecoder().decode(T.self, from: data)
-            return result
+            data = try createModelRawData(fromURL: url)
         } catch {
-            return nil
+            fatalError("Couldn't load \(fileName) from bundle:\n\(error)")
+        }
+
+        do {
+            return try JSONDecoder().decode(T.self, from: data)
+        } catch {
+            fatalError("Couldn't parse \(fileName) as \(T.self):\n\(error)")
         }
     }
 
     static func createModelRawData(fromURL: URL) throws -> Data {
         try Data(contentsOf: fromURL)
-    }
-}
-
-func load<T: Decodable>(_ filename: String) -> T {
-    let data: Data
-
-
-    guard let file = Bundle.main.url(forResource: filename, withExtension: nil)
-    else {
-        fatalError("Couldn't find \(filename) in main bundle.")
-    }
-
-
-    do {
-        data = try Data(contentsOf: file)
-    } catch {
-        fatalError("Couldn't load \(filename) from main bundle:\n\(error)")
-    }
-
-
-    do {
-        let decoder = JSONDecoder()
-        return try decoder.decode(T.self, from: data)
-    } catch {
-        fatalError("Couldn't parse \(filename) as \(T.self):\n\(error)")
     }
 }

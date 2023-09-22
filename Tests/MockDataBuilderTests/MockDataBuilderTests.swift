@@ -3,12 +3,8 @@ import XCTest
 
 final class MockDataBuilderTests: XCTestCase {
     
-    func test_mock_builder() {
-        do {
-            let data: [Product] = try XCTUnwrap(MockDataBuilder.buildFrom(bundle: .module, resource: "products.json"))
-            XCTAssert(data.count>0)
-        } catch {
-            XCTFail()
-        }
+    func test_mock_builder_with_valid_file_url() {
+        let data: [Product] = MockDataBuilder.buildFrom(bundle: .module, fileName: "products.json")
+        XCTAssert(data.count>0)
     }
 }
